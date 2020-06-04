@@ -24,10 +24,9 @@ variable "aws_profile" {
   default     = "default"
 }
 
-variable "aws_availability_zones" {
-  description = "Avaiability zones resources willl be deployed to. Need at least 3"
-  type = list(string)
-  default = ["us-east-1a", "us-east-1b", "us-east-1c"]
+variable "az_count" {
+  description = "Number of AZs to cover in a given region"
+  default     = "2"
 }
 
 
