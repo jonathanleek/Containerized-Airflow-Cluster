@@ -6,7 +6,7 @@ resource "aws_rds_cluster" "airflow_database" {
   copy_tags_to_snapshot = true
   engine = "aurora-postgresql2.3"
   engine_mode = "serverless"
-  availability_zones = var.aws_availability_zones
+  availability_zones = aws_subnet.private.availability_zone
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
   master_password = var.db_password
   master_username = var.db_username
@@ -31,3 +31,14 @@ resource "aws_rds_cluster" "airflow_database" {
 #----------------------------------
 #Create Redis Queue
 #----------------------------------
+resource "aws_elasticache_cluster" "airflow_queue" {
+  cluster_id             = "${var.cluster_name}-queue"
+  engine           = "redis"
+  node_type = "cache.t3.small"
+  num_cache_nodes = 1
+  parameter_group_name = aws_elasticache_parameter_group.airflow_redis_pg.name
+  subnet_group_name = aws_elasticache_subnet_group.airflow_redis_subnet_group.name
+  security_group_ids = [aws_security_group.airflow_elasticache_sg.id]
+  availability_zone =  aws_subnet.private.availability_zone
+  tags             = var.tags
+}
