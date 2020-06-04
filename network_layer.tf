@@ -208,8 +208,3 @@ resource "aws_elasticache_subnet_group" "airflow_redis_subnet_group" {
   tags       = var.tags
 }
 
-#----------------------------------
-#Create EFS for DAG repositories
-#----------------------------------
-resource "aws_efs_file_system" efs {
-}

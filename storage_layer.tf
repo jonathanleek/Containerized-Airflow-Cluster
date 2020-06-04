@@ -42,3 +42,9 @@ resource "aws_elasticache_cluster" "airflow_queue" {
   availability_zone =  aws_subnet.private.availability_zone
   tags             = var.tags
 }
+
+#----------------------------------
+#Create EFS for DAG repositories
+#----------------------------------
+resource "aws_efs_file_system" efs {
+}
