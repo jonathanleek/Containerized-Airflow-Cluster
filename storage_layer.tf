@@ -2,9 +2,9 @@
 #Create serverless RDS Cluster
 #----------------------------------
 resource "aws_rds_cluster" "airflow_database" {
-  cluster_identifier = "${var.cluster_name}-db"
+  cluster_identifier = "${var.project_name}-db"
   copy_tags_to_snapshot = true
-  engine = "aurora-postgresql2.3"
+  engine = "aurora-postgresql2.3" #TODO Change to vanilla postgres, autoscaling is available now
   engine_mode = "serverless"
   availability_zones = aws_subnet.private.availability_zone
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
@@ -32,7 +32,7 @@ resource "aws_rds_cluster" "airflow_database" {
 #Create Redis Queue
 #----------------------------------
 resource "aws_elasticache_cluster" "airflow_queue" {
-  cluster_id             = "${var.cluster_name}-queue"
+  cluster_id             = "${var.project_name}-queue"
   engine           = "redis"
   node_type = "cache.t3.small"
   num_cache_nodes = 1

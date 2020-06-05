@@ -1,27 +1,25 @@
-#METADATA VARIABLES----------------------
-variable "cluster_name" {
-  description = "Used to name resources created throughout AWS"
-  type        = string
+variable "aws_region" {
+  description = "The AWS region things are created in"
+  default     = "us-west-2"
+}
+
+variable "project_name" {
+  description = "Name of project, used for creating resource names"
 }
 
 variable "tags" {
-  description = "Tags applied to all Airflow related objects"
-  type        = map
-  default = {
-    "Project" = "Airflow"
-  }
-
-}#AWS VARIABLES------------------
-variable "aws_region" {
-  description = "AWS Region"
-  type        = string
-  default     = "us-east-1"
+  description = "tags applied to resources when possible"
+  type = map
 }
 
-variable "aws_profile" {
-  description = "Profile from AWS credential file to be used"
-  type        = string
-  default     = "default"
+variable "ecs_task_execution_role_name" {
+  description = "ECS task execution role name"
+  default = "myEcsTaskExecutionRole"
+}
+
+variable "ecs_auto_scale_role_name" {
+  description = "ECS auto scale role Name"
+  default = "myEcsAutoScaleRole"
 }
 
 variable "az_count" {
@@ -29,32 +27,31 @@ variable "az_count" {
   default     = "2"
 }
 
-
-#RDS DB VARIABLES------------------------------------
-variable "db_instance_type" {
-  description = "Instance type for PostgreSQL database"
-  type        = string
-  default     = "db.t2.micro"
+variable "app_image" {
+  description = "Docker image to run in the ECS cluster"
+  default     = "bradfordhamilton/crystal_blockchain:latest"
 }
 
-variable "db_dbname" {
-  description = "PostgreSQL database name"
-  type        = string
-  default     = "airflow"
+variable "app_port" {
+  description = "Port exposed by the docker image to redirect traffic to"
+  default     = 3000
 }
 
-variable "db_username" {
-  description = "PostgreSQL database username"
-  type        = string
-  default     = "airflow"
+variable "app_count" {
+  description = "Number of docker containers to run"
+  default     = 3
 }
 
-variable "db_password" {
-  description = "PostgreSQL database password"
-  type        = string
+variable "health_check_path" {
+  default = "/"
 }
 
-variable "fernet_key" {
-  description = "Key for encrypting data in the database - see Airflow docs."
-  type = string
+variable "fargate_cpu" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  default     = "1024"
+}
+
+variable "fargate_memory" {
+  description = "Fargate instance memory to provision (in MiB)"
+  default     = "2048"
 }
