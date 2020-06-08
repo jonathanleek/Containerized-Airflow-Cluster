@@ -1,12 +1,12 @@
 # Create Load Balancer
 resource "aws_alb" "main" {
-  name            = "cb-load-balancer"
+  name            = "${var.project_name}-load-balancer"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
 }
 
 resource "aws_alb_target_group" "app" {
-  name        = "cb-target-group"
+  name        = "${var.project_name}-target-group"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
@@ -25,11 +25,11 @@ resource "aws_alb_target_group" "app" {
 
 # Redirect all traffic from the ALB to the target group
 resource "aws_ecs_cluster" "main" {
-  name = "cb-cluster"
+  name = "${var.project_name}-cluster"
 }
 
-data "template_file" "cb_app" {
-  template = file("./templates/ecs/cb_app.json.tpl")
+data "template_file" "app-template" {
+  template = file("./templates/ecs/airflow_app.json.tpl")
 
   vars = {
     app_image      = var.app_image
@@ -41,7 +41,7 @@ data "template_file" "cb_app" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family                   = "cb-app-task"
+  family                   = "${var.project_name}-app-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "main" {
-  name            = "cb-service"
+  name            = "${var.project_name}-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = var.app_count
